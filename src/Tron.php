@@ -1010,7 +1010,7 @@ class Tron implements TronInterface
             $owner_address = $this->address['hex'];
         }
 
-        $freeze = $this->transactionBuilder->freezeBalanceV2($amount, $resource, $owner_address);
+        $freeze = $this->transactionBuilder->unfreezeBalanceV2($amount, $resource, $owner_address);
         $signedTransaction = $this->signTransaction($freeze);
         $response = $this->sendRawTransaction($signedTransaction);
         return array_merge($response, $signedTransaction);
