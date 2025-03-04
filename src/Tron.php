@@ -1016,6 +1016,31 @@ class Tron implements TronInterface
         return array_merge($response, $signedTransaction);
     }
 
+
+    //代理资源
+    public function sendDelegate(string $to, float $amount, string $resource = 'ENERGY',  $lock = false, $lock_period = 0, ?string $from = null): array
+    {
+        if (is_null($from) || !$from) {
+            $from = $this->address['hex'];
+        }
+        $transaction = $this->transactionBuilder->delegateResource($to, $amount, $resource, $lock, $lock_period, $from);
+        $signedTransaction = $this->signTransaction($transaction);
+
+        $response = $this->sendRawTransaction($signedTransaction);
+        return array_merge($response, $signedTransaction);
+    }
+    //回收资源
+    public function sendUnDelegate(string $to, float $amount, string $resource = 'ENERGY', ?string $from = null): array
+    {
+        if (is_null($from) || !$from) {
+            $from = $this->address['hex'];
+        }
+        $transaction = $this->transactionBuilder->undelegateResource($to, $amount, $resource, $from);
+        $signedTransaction = $this->signTransaction($transaction);
+        $response = $this->sendRawTransaction($signedTransaction);
+        return array_merge($response, $signedTransaction);
+    }
+
     /**
      * Withdraw Super Representative rewards, useable every 24 hours.
      *

@@ -343,6 +343,70 @@ class TransactionBuilder
         ]);
     }
 
+
+    // 代理资源
+    public function delegateResource($to, $amount, string $resource = 'ENERGY',  $lock = false, $lock_period = 0, ?string $from = null)
+    {
+        if (!is_float($amount) || $amount < 0) {
+            throw new TronException('Invalid amount provided');
+        }
+        if (!in_array($resource, ['BANDWIDTH', 'ENERGY'])) {
+            throw new TronException('Invalid resource provided: Expected "BANDWIDTH" or "ENERGY"');
+        }
+
+        if (is_null($from)) {
+            $from = $this->tron->address['hex'];
+        }
+
+        $to = $this->tron->address2HexString($to);
+        $from = $this->tron->address2HexString($from);
+
+        if ($from === $to) {
+            throw new TronException('Cannot transfer TRX to the same account');
+        }
+        $sendData = [
+            'owner_address' => $from,
+            'receiver_address' => $to,
+            'balance' => $this->tron->toTron($amount),
+            'resource' => $resource,
+        ];
+        if ($lock) {
+            $sendData = array_merge($sendData, [
+                'lock' => $lock,
+                'lock_period' => $lock_period
+            ]);
+        }
+        $response = $this->tron->getManager()->request('wallet/delegateresource', $sendData);
+        return $response;
+    }
+
+    // 回收资源
+    public function undelegateResource($to, $amount, string $resource = 'ENERGY', ?string $from = null)
+    {
+        if (!is_float($amount) || $amount < 0) {
+            throw new TronException('Invalid amount provided');
+        }
+        if (!in_array($resource, ['BANDWIDTH', 'ENERGY'])) {
+            throw new TronException('Invalid resource provided: Expected "BANDWIDTH" or "ENERGY"');
+        }
+        if (is_null($from)) {
+            $from = $this->tron->address['hex'];
+        }
+        $to = $this->tron->address2HexString($to);
+        $from = $this->tron->address2HexString($from);
+        if ($from === $to) {
+            throw new TronException('Cannot transfer TRX to the same account');
+        }
+        $sendData = [
+            'owner_address'     => $from,
+            'receiver_address'  => $to,
+            'balance'           => $this->tron->toTron($amount),
+            'resource'          => $resource,
+        ];
+        $response = $this->tron->getManager()->request('wallet/undelegateresource', $sendData);
+        return $response;
+    }
+
     /**
      * Withdraw Super Representative rewards, useable every 24 hours.
      *
