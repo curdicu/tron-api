@@ -967,6 +967,18 @@ class Tron implements TronInterface
 
         return array_merge($response, $signedTransaction);
     }
+    //质押2.0
+    public function freezeBalanceV2(float $amount = 0, string $resource = 'ENERGY', ?string $owner_address = null)
+    {
+        if ($owner_address == null) {
+            $owner_address = $this->address['hex'];
+        }
+
+        $freeze = $this->transactionBuilder->freezeBalanceV2($amount, $resource, $owner_address);
+        $signedTransaction = $this->signTransaction($freeze);
+        $response = $this->sendRawTransaction($signedTransaction);
+        return array_merge($response, $signedTransaction);
+    }
 
     /**
      * Unfreeze TRX that has passed the minimum freeze duration.

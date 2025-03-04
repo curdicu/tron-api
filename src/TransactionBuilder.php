@@ -282,6 +282,22 @@ class TransactionBuilder
             'resource' => $resource
         ]);
     }
+    //质押2.0 
+    public function freezeBalanceV2(float $amount = 0, string $resource = 'BANDWIDTH', string $address)
+    {
+        if (!in_array($resource, ['BANDWIDTH', 'ENERGY'])) {
+            throw new TronException('Invalid resource provided: Expected "BANDWIDTH" or "ENERGY"');
+        }
+
+        if (!is_float($amount)) {
+            throw new TronException('Invalid amount provided');
+        }
+        return $this->tron->getManager()->request('wallet/freezebalancev2', [
+            'owner_address' => $this->tron->address2HexString($address),
+            'frozen_balance' => $this->tron->toTron($amount),
+            'resource' => $resource
+        ]);
+    }
 
     /**
      * Unfreeze TRX that has passed the minimum freeze duration.
