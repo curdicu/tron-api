@@ -324,6 +324,25 @@ class TransactionBuilder
         ]);
     }
 
+
+
+    //解押2.0 
+    public function unfreezeBalanceV2(float $amount = 0, string $resource = 'BANDWIDTH', ?string $address = null)
+    {
+        if (!in_array($resource, ['BANDWIDTH', 'ENERGY'])) {
+            throw new TronException('Invalid resource provided: Expected "BANDWIDTH" or "ENERGY"');
+        }
+
+        if (!is_float($amount)) {
+            throw new TronException('Invalid amount provided');
+        }
+        return $this->tron->getManager()->request('wallet/unfreezebalancev2', [
+            'owner_address'     => $this->tron->address2HexString($address),
+            'unfreeze_balance'  => $this->tron->toTron($amount),
+            'resource'          => $resource
+        ]);
+    }
+
     /**
      * Withdraw Super Representative rewards, useable every 24 hours.
      *
