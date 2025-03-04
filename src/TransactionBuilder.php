@@ -283,7 +283,7 @@ class TransactionBuilder
         ]);
     }
     //质押2.0 
-    public function freezeBalanceV2(float $amount = 0, string $resource = 'BANDWIDTH', string $address)
+    public function freezeBalanceV2(float $amount = 0, string $resource = 'BANDWIDTH', ?string $address = null)
     {
         if (!in_array($resource, ['BANDWIDTH', 'ENERGY'])) {
             throw new TronException('Invalid resource provided: Expected "BANDWIDTH" or "ENERGY"');
