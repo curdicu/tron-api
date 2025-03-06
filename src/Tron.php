@@ -1018,24 +1018,24 @@ class Tron implements TronInterface
 
 
     //代理资源
-    public function sendDelegate(string $to, float $amount, string $resource = 'ENERGY',  $lock = false, $lock_period = 0, ?string $from = null): array
+    public function sendDelegate(string $to, float $amount, string $resource = 'ENERGY',  $lock = false, $lock_period = 0, ?string $from = null ,?int $permission_id = 0): array
     {
         if (is_null($from) || !$from) {
             $from = $this->address['hex'];
         }
-        $transaction = $this->transactionBuilder->delegateResource($to, $amount, $resource, $lock, $lock_period, $from);
+        $transaction = $this->transactionBuilder->delegateResource($to, $amount, $resource, $lock, $lock_period, $from , $permission_id );
         $signedTransaction = $this->signTransaction($transaction);
 
         $response = $this->sendRawTransaction($signedTransaction);
         return array_merge($response, $signedTransaction);
     }
     //回收资源
-    public function sendUnDelegate(string $to, float $amount, string $resource = 'ENERGY', ?string $from = null): array
+    public function sendUnDelegate(string $to, float $amount, string $resource = 'ENERGY', ?string $from = null, ?int $permission_id = 0): array
     {
         if (is_null($from) || !$from) {
             $from = $this->address['hex'];
         }
-        $transaction = $this->transactionBuilder->undelegateResource($to, $amount, $resource, $from);
+        $transaction = $this->transactionBuilder->undelegateResource($to, $amount, $resource, $from , $permission_id);
         $signedTransaction = $this->signTransaction($transaction);
         $response = $this->sendRawTransaction($signedTransaction);
         return array_merge($response, $signedTransaction);

@@ -358,7 +358,7 @@ class TransactionBuilder
 
 
     // 代理资源
-    public function delegateResource($to, $amount, string $resource = 'ENERGY',  $lock = false, $lock_period = 0, ?string $from = null)
+    public function delegateResource($to, $amount, string $resource = 'ENERGY',  $lock = false, $lock_period = 0, ?string $from = null, ?int $permission_id = 0)
     {
         if (!is_float($amount) || $amount < 0) {
             throw new TronException('Invalid amount provided');
@@ -389,12 +389,16 @@ class TransactionBuilder
                 'lock_period' => $lock_period
             ]);
         }
+
+        if ($permission_id !== 0) {
+            $sendData['Permission_id'] = $permission_id;
+        }
         $response = $this->tron->getManager()->request('wallet/delegateresource', $sendData);
         return $response;
     }
 
     // 回收资源
-    public function undelegateResource($to, $amount, string $resource = 'ENERGY', ?string $from = null)
+    public function undelegateResource($to, $amount, string $resource = 'ENERGY', ?string $from = null, ?int $permission_id = 0)
     {
         if (!is_float($amount) || $amount < 0) {
             throw new TronException('Invalid amount provided');
@@ -416,6 +420,10 @@ class TransactionBuilder
             'balance'           => $this->tron->toTron($amount),
             'resource'          => $resource,
         ];
+
+        if ($permission_id !== 0) {
+            $sendData['Permission_id'] = $permission_id;
+        }
         $response = $this->tron->getManager()->request('wallet/undelegateresource', $sendData);
         return $response;
     }
