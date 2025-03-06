@@ -1004,13 +1004,13 @@ class Tron implements TronInterface
 
 
     //解押2.0
-    public function unfreezeBalanceV2(float $amount = 0, string $resource = 'ENERGY', ?string $owner_address = null)
+    public function unfreezeBalanceV2(float $amount = 0, string $resource = 'ENERGY', ?string $owner_address = null, ?int $permission_id = 0)
     {
         if ($owner_address == null) {
             $owner_address = $this->address['hex'];
         }
 
-        $freeze = $this->transactionBuilder->unfreezeBalanceV2($amount, $resource, $owner_address);
+        $freeze = $this->transactionBuilder->unfreezeBalanceV2($amount, $resource, $owner_address , $permission_id);
         $signedTransaction = $this->signTransaction($freeze);
         $response = $this->sendRawTransaction($signedTransaction);
         return array_merge($response, $signedTransaction);
