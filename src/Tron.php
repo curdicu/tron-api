@@ -1437,4 +1437,45 @@ class Tron implements TronInterface
             'value' =>  $token_id
         ]);
     }
+
+
+    /**
+     * Verify a message signature
+     *
+     * @param string $message
+     * @param string $signature
+     * @param string $address
+     * @return bool
+     * @throws TronException
+     */
+    public function verifySignature(string $message, string $signature, string $address): bool
+    {
+        if (!$this->isAddress($address)) {
+            throw new TronException('Invalid address provided');
+        }
+
+        $address = $this->address2HexString($address);
+
+        try {
+            $secp = new \kornrunner\Secp256k1();
+            
+            // Split signature into r, s and v
+            $r = substr($signature, 0, 64);
+            $s = substr($signature, 64, 64);
+            $v = substr($signature, 128, 2);
+            $v = hexdec($v);
+
+            // Recover public key
+            $recid = $v - 27;
+            $pubkey = $secp->recoverPublicKey($message, $r, $s, $recid);
+            
+            // Convert public key to address
+            $hash = Keccak::hash(hex2bin($pubkey), 256);
+            $recoveredAddress = substr($hash, 24);
+            
+            return strtolower($address) === strtolower($recoveredAddress);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 }
