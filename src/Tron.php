@@ -1453,29 +1453,6 @@ class Tron implements TronInterface
         if (!$this->isAddress($address)) {
             throw new TronException('Invalid address provided');
         }
-
-        $address = $this->address2HexString($address);
-
-        try {
-            $secp = new \kornrunner\Secp256k1();
-            
-            // Split signature into r, s and v
-            $r = substr($signature, 0, 64);
-            $s = substr($signature, 64, 64);
-            $v = substr($signature, 128, 2);
-            $v = hexdec($v);
-
-            // Recover public key
-            $recid = $v - 27;
-            $pubkey = $secp->recoverPublicKey($message, $r, $s, $recid);
-            
-            // Convert public key to address
-            $hash = Keccak::hash(hex2bin($pubkey), 256);
-            $recoveredAddress = substr($hash, 24);
-            
-            return strtolower($address) === strtolower($recoveredAddress);
-        } catch (\Exception $e) {
-            return false;
-        }
+        return Support\Secp::verify($message, $signature, $address);
     }
 }
