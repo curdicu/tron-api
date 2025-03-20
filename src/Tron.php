@@ -1467,7 +1467,7 @@ class Tron implements TronInterface
 
             // Recover public key
             $recid = $v - 27;
-            $pubkey = $secp->recoverPublicKey($message, $r, $s, $recid);
+            $pubkey = $secp->recover($message, $r, $s, $recid);
             
             // Convert public key to address
             $hash = Keccak::hash(hex2bin($pubkey), 256);
