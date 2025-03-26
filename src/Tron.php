@@ -1453,6 +1453,8 @@ class Tron implements TronInterface
         if (!$this->isAddress($address)) {
             throw new TronException('Invalid address provided');
         }
-        return Support\Secp::verify($message, $signature, $address);
+        $messageHash = bin2hex(Hash::SHA256($message));
+        $isValid = Support\Secp::verify($messageHash, $signature, $address);
+        return $isValid;
     }
 }
