@@ -1453,16 +1453,26 @@ class Tron implements TronInterface
         if (!$this->isAddress($address)) {
             throw new TronException('Invalid address provided');
         }
+
         // 处理以太坊风格的签名
         if (substr($signature, 0, 2) === '0x') {
             $signature = substr($signature, 2); // 移除0x前缀
+            // 确保签名长度正确 (r + s + v = 65 bytes = 130 hex chars)
+            if (strlen($signature) !== 130) {
+                throw new TronException('Invalid signature length');
+            }
             $r = substr($signature, 0, 64);
             $s = substr($signature, 64, 64);
             $v = substr($signature, 128, 2);
-            // 转换v值为recovery参数
+            // 转换v值为recovery参数 (27/28 -> 0/1)
             $recovery = hexdec($v) - 27;
-            $signature = $r . $s . dechex($recovery);
+            if ($recovery !== 0 && $recovery !== 1) {
+                throw new TronException('Invalid recovery value in signature');
+            }
+            // 重新格式化为Tron签名格式
+            $signature = $r . $s . sprintf('%02x', $recovery);
         }
+
         $messageHash = bin2hex(Hash::SHA256($message));
         $isValid = Support\Secp::verify($messageHash, $signature, $address);
         return $isValid;
