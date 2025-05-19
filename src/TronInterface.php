@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace IEXBase\TronAPI;
 
@@ -25,7 +27,7 @@ interface TronInterface
      *
      * @param string $address
      */
-    public function setAddress(string $address) : void;
+    public function setAddress(string $address): void;
 
     /**
      * Getting a balance
@@ -70,7 +72,7 @@ interface TronInterface
      * @param $account_name
      * @return array
      */
-    public function changeAccountName(?string $address = null, string $account_name);
+    public function changeAccountName($address, string $account_name);
 
     /**
      * Create an account.
