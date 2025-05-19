@@ -789,7 +789,7 @@ class Tron implements TronInterface
      * @return array
      * @throws TronException
      */
-    public function changeAccountName(?string $address = null, string $account_name)
+    public function changeAccountName($address = null, string $account_name)
     {
         $address = (!is_null($address) ? $address : $this->address['hex']);
 
