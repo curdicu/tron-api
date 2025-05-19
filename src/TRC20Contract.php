@@ -91,7 +91,7 @@ class TRC20Contract
      * @param string $contractAddress
      * @param string|null $abi
      */
-    public function __construct(Tron $tron, string $contractAddress, string $abi = null)
+    public function __construct(Tron $tron, string $contractAddress, ?string $abi = null)
     {
         $this->_tron = $tron;
 
@@ -245,7 +245,7 @@ class TRC20Contract
      * @throws TRC20Exception
      * @throws TronException
      */
-    public function balanceOf(string $address = null, bool $scaled = true): string
+    public function balanceOf(?string $address = null, bool $scaled = true): string
     {
         if(is_null($address))
             $address = $this->_tron->address['base58'];
@@ -273,7 +273,7 @@ class TRC20Contract
      * @throws TRC20Exception
      * @throws TronException
      */
-    public function transfer(string $to, string $amount, string $from = null): array
+    public function transfer(string $to, string $amount, ?string $from = null): array
     {
         if($from == null) {
             $from = $this->_tron->address['base58'];
